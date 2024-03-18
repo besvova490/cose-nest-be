@@ -1,4 +1,5 @@
 export enum USER_ROLES {
-  ServiceSeeker = 'ServiceSeeker',
-  ServiceChampion = 'ServiceChampion',
+  SERVICE_REQUESTER = 'SERVICE_REQUESTER',
+  SERVICE_CHAMPION = 'SERVICE_CHAMPION',
+  ADMIN = 'ADMIN',
 }

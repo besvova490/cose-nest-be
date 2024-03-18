@@ -8,6 +8,8 @@ export class AbstractEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  isRestoreOperation: boolean = false;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

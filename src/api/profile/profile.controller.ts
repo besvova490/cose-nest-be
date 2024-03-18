@@ -34,7 +34,7 @@ export class ProfileController {
   @Serialize(ProfileDto)
   @Get()
   findMe(@CurrentUser() user: User) {
-    return this.profileService.findMe(user.id);
+    return this.profileService.findMe(user.profile.id);
   }
 
   @Serialize(ProfileDto)
@@ -43,11 +43,11 @@ export class ProfileController {
     @CurrentUser() user: User,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.profileService.update(user.id, updateProfileDto);
+    return this.profileService.update(user.profile.id, updateProfileDto);
   }
 
   @Delete()
   remove(@CurrentUser() user: User) {
-    return this.profileService.remove(user.id);
+    return this.profileService.remove(user.profile.id);
   }
 }

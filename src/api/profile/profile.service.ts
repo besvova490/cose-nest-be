@@ -1,8 +1,12 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { FindOneOptions, In } from 'typeorm';
+
+// entities
+import { Profile } from './entities/profile.entity';
 
 // repository
+import { ServiceRepository } from '../service/service.repository';
 import { ProfileRepository } from './profile.repository';
-import { UserRepository } from '../user/user.repository';
 
 // dtos
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -11,38 +15,50 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 export class ProfileService {
   constructor(
     private readonly repo: ProfileRepository,
-    private readonly userRepo: UserRepository,
+    private readonly serviceRepo: ServiceRepository,
   ) {}
-  findMe(id: number) {
-    return this.userRepo.findOne({ where: { id }, relations: ['profile'] });
+  async findMe(id: number) {
+    const resp = await this.repo.findOne({
+      where: { id },
+      relations: ['services', 'user', 'requestedServices'],
+    });
+
+    return resp;
   }
 
   findAll({ id }: { id?: number }) {
     return this.repo.find({ where: { id } });
   }
 
-  findOne(id: number) {
-    return this.repo.findOne({ where: { id } });
+  findOne(id: number, options?: FindOneOptions<Profile>) {
+    return this.repo.findOne({
+      where: { id },
+      ...options,
+    });
   }
 
   async update(id: number, updateProfileDto: UpdateProfileDto) {
-    const user = await this.userRepo.findOne({
+    const profile = await this.repo.findOne({
       where: { id },
-      relations: ['profile'],
+      relations: ['user'],
     });
 
-    if (!user) {
+    if (!profile) {
       throw new BadRequestException('User not found');
     }
 
-    Object.assign(user.profile, updateProfileDto);
+    Object.assign(profile, updateProfileDto);
 
-    const result = await this.repo.save(user.profile);
+    if (updateProfileDto.services) {
+      const services = await this.serviceRepo.find({
+        where: { id: In(updateProfileDto.services) },
+      });
 
-    return {
-      ...user,
-      profile: result,
-    };
+      profile.services = services;
+      profile.updatedAt = new Date();
+    }
+
+    return this.repo.save(profile);
   }
 
   async remove(id: number) {

@@ -1,25 +1,36 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import {
+  Entity,
+  ObjectId,
+  ObjectIdColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 export enum OperationType {
   update = 'update',
   delete = 'delete',
 }
 
-@Schema()
+@Entity()
 export class Event {
-  @Prop({ required: true, default: null })
+  @ObjectIdColumn()
+  _id?: ObjectId;
+
+  @Column({ nullable: false })
+  recordId: number;
+
+  @Column({ nullable: false })
   data: string;
 
-  @Prop({ required: false, default: new Date() })
-  createdAt: Date;
-
-  @Prop({ required: true, default: null })
+  @Column({ nullable: false })
   eventType: OperationType;
 
-  @Prop({ required: true, default: null })
+  @Column({ nullable: false })
   model: string;
-}
 
-export type EventDocument = HydratedDocument<Event>;
-export const EventSchema = SchemaFactory.createForClass(Event);
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+}

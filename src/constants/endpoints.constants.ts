@@ -3,5 +3,6 @@ export const API_ENDPOINTS = {
   AUTH: 'auth',
   PROFILE: 'profile',
   CHANNELS: 'channels',
-  EVENT_STORE: 'event-store',
+  EVENT_STORE: 'event-stores',
+  SERVICES: 'services',
 };

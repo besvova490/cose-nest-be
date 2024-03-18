@@ -36,12 +36,18 @@ export class AuthService {
     private readonly userRepo: UserRepository,
   ) {}
 
-  private async getTokens(id: number, email: string, expiresIn?: string) {
+  private async getTokens(
+    id: number,
+    email: string,
+    role?: string,
+    expiresIn?: string,
+  ) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: id,
           email,
+          role,
         },
         {
           secret: process.env.NEST_JWT_ACCESS_SECRET,
@@ -52,6 +58,7 @@ export class AuthService {
         {
           sub: id,
           email,
+          role,
         },
         {
           secret: process.env.NEST_JWT_REFRESH_SECRET,
@@ -90,12 +97,11 @@ export class AuthService {
 
       const profile = queryRunner.manager.create(Profile, {
         ...data,
-        role: USER_ROLES.ServiceSeeker,
+        role: USER_ROLES.SERVICE_REQUESTER,
         user,
       } as unknown);
 
       await queryRunner.manager.save(Profile, profile);
-
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -127,7 +133,7 @@ export class AuthService {
       );
     }
 
-    return this.getTokens(user.id, user.email);
+    return this.getTokens(user.id, user.email, user.profile.role);
   }
 
   async refresh(refreshToken: string) {

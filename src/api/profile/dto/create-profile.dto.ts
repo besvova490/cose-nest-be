@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
@@ -9,4 +9,7 @@ export class CreateProfileDto {
 
   @IsString()
   lastName: string;
+
+  @IsNumber({}, { each: true })
+  services: number[];
 }

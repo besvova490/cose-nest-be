@@ -1,19 +1,18 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module, Global } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // services
 import { EventStoreService } from './event-store.service';
 
 // controllers
-import { EventStoreController } from './messages.controller';
+import { EventStoreController } from './event-store.controller';
 
 // schemas
-import { Event, EventSchema } from './schemas/event.schema';
+import { Event } from './schemas/event.schema';
 
+@Global()
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([Event], 'mongo')],
   controllers: [EventStoreController],
   providers: [EventStoreService],
   exports: [EventStoreService],

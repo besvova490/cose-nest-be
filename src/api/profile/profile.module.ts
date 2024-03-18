@@ -1,19 +1,24 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+// modules
+import { EventStoreModule } from '../event-store/event-store.module';
+import { EventStoreService } from '../event-store/event-store.service';
+
 // repositories
 import { ProfileRepository } from './profile.repository';
-import { UserRepository } from '../user/user.repository';
-
-// modules
-import { UserModule } from '../user/user.module';
+import { ServiceRepository } from '../service/service.repository';
 
 // entities
 import { Profile } from './entities/profile.entity';
-import { User } from '../user/entities/user.entity';
+import { Service } from '../service/entities/service.entity';
+import { Event } from '../event-store/schemas/event.schema';
 
 // services
 import { ProfileService } from './profile.service';
+
+// subscribers
+import { ProfileSubscriber } from './profile.subscriber';
 
 // controllers
 import { ProfileController } from './profile.controller';
@@ -22,13 +27,21 @@ import { ProfileController } from './profile.controller';
   imports: [
     TypeOrmModule.forFeature([
       Profile,
-      User,
+      Service,
       ProfileRepository,
-      UserRepository,
+      ServiceRepository,
     ]),
-    UserModule,
+    TypeOrmModule.forFeature([Event], 'mongo'),
+    EventStoreModule,
   ],
   controllers: [ProfileController],
-  providers: [ProfileService, UserRepository, ProfileRepository],
+  providers: [
+    ProfileService,
+    ProfileRepository,
+    ServiceRepository,
+    ProfileSubscriber,
+    EventStoreService,
+  ],
+  exports: [ProfileService],
 })
 export class ProfileModule {}

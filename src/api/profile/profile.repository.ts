@@ -1,20 +1,18 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-// helpers
-import { BaseRepository } from 'src/repository/base-repository.repository';
+// services
+import { EventStoreService } from '../event-store/event-store.service';
 
 // entity
 import { Profile } from './entities/profile.entity';
 
-// services
-import { EventStoreService } from '../event-store/event-store.service';
-
-export class ProfileRepository extends BaseRepository<Profile> {
+export class ProfileRepository extends Repository<Profile> {
   constructor(
     @InjectRepository(Profile)
     private readonly repository: Repository<Profile>,
+    private eventStoreService: EventStoreService,
   ) {
-    super(Profile, repository.manager, EventStoreService as any);
+    super(Profile, repository.manager);
   }
 }

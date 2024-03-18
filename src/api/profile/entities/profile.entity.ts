@@ -1,8 +1,18 @@
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+  ManyToOne,
+} from 'typeorm';
 
 // entity
 import { AbstractEntity } from '../../../entity/abstract-entity.entity';
 import { User } from '../../user/entities/user.entity';
+import { Service } from '../../service/entities/service.entity';
+import { Review } from '../../review/entities/review.entity';
 
 // helpers
 import { USER_ROLES } from '../../../constants';
@@ -33,4 +43,18 @@ export class Profile extends AbstractEntity {
   @OneToOne(() => User, (user) => user.profile, { cascade: true })
   @JoinColumn()
   user: User;
+
+  @ManyToMany(() => Service, (service) => service.serviceChampions)
+  @JoinTable()
+  services: Service[];
+
+  @ManyToMany(() => Service, (service) => service.serviceParticipators)
+  @JoinTable()
+  requestedServices: Service[];
+
+  @ManyToOne(() => Review, (review) => review.reviewed)
+  feedbacks: Review[];
+
+  @ManyToMany(() => Review, (review) => review.reviewer)
+  reviews: Review[];
 }
