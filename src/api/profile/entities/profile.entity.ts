@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 // entity
@@ -13,6 +14,7 @@ import { AbstractEntity } from '../../../entity/abstract-entity.entity';
 import { User } from '../../user/entities/user.entity';
 import { Service } from '../../service/entities/service.entity';
 import { Review } from '../../review/entities/review.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 // helpers
 import { USER_ROLES } from '../../../constants';
@@ -48,9 +50,11 @@ export class Profile extends AbstractEntity {
   @JoinTable()
   services: Service[];
 
-  @ManyToMany(() => Service, (service) => service.serviceParticipators)
-  @JoinTable()
-  requestedServices: Service[];
+  @OneToMany(() => Order, (order) => order.serviceRequester)
+  requestedOrders: Order[];
+
+  @OneToMany(() => Order, (order) => order.serviceChampion)
+  acceptedOrders: Order[];
 
   @ManyToOne(() => Review, (review) => review.reviewed)
   feedbacks: Review[];

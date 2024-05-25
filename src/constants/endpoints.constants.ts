@@ -5,4 +5,5 @@ export const API_ENDPOINTS = {
   CHANNELS: 'channels',
   EVENT_STORE: 'event-stores',
   SERVICES: 'services',
+  ORDERS: 'orders',
 };

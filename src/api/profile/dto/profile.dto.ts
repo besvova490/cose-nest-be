@@ -25,13 +25,11 @@ export class ProfileDto {
   isTwoFactorAuthEnabled: boolean;
 
   @Expose()
-  type: USER_ROLES;
+  role: USER_ROLES;
 
   @Expose()
-  @Transform(({ obj }) => obj.services)
+  @Transform(({ obj }) =>
+    obj.role !== USER_ROLES.SERVICE_REQUESTER ? obj.services : undefined,
+  )
   services: string[];
-
-  @Expose()
-  @Transform(({ obj }) => obj.requestedServices)
-  requestedServices: string[];
 }

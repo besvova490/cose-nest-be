@@ -20,7 +20,7 @@ export class ProfileService {
   async findMe(id: number) {
     const resp = await this.repo.findOne({
       where: { id },
-      relations: ['services', 'user', 'requestedServices'],
+      relations: ['services', 'user'],
     });
 
     return resp;

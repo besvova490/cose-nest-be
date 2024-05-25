@@ -1,9 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
+
+// dtos
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderDto } from './dto/order.dto';
 
-@Controller('orders')
+// interceptors
+import { Serialize } from '../../interceptors/serialize.interceptor';
+
+@Serialize(OrderDto)
+@Controller()
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -13,18 +27,21 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(
+    @Query('coordinatesFrom') coordinatesFrom: string,
+    @Query('coordinatesTo') coordinatesTo: string,
+  ) {
+    return this.ordersService.findAll({
+      params: {
+        coordinatesFrom,
+        coordinatesTo,
+      },
+    });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
   }
 
   @Delete(':id')

@@ -10,6 +10,9 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 
+// helpers
+import { USER_ROLES } from '../../constants';
+
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -17,6 +20,11 @@ export class AuthController {
   @Post('register')
   create(@Body() createAuthDto: RegisterAuthDto) {
     return this.authService.create(createAuthDto);
+  }
+
+  @Post('register-champion')
+  createChampion(@Body() createAuthDto: RegisterAuthDto) {
+    return this.authService.create(createAuthDto, USER_ROLES.SERVICE_CHAMPION);
   }
 
   @Post('login')

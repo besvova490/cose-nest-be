@@ -17,6 +17,13 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: ['http://localhost:8080', 'http://localhost:8081'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   await app.listen(process.env.NEST_PORT);
   console.log(`Application is running on: ${process.env.NEST_PORT}`);
 }

@@ -58,6 +58,10 @@ import { ReviewModule } from './api/review/review.module';
             path: API_ENDPOINTS.SERVICES,
             module: ServiceModule,
           },
+          {
+            path: API_ENDPOINTS.ORDERS,
+            module: OrdersModule,
+          },
         ],
       },
     ]),

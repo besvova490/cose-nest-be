@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, FindOneOptions } from 'typeorm';
 
 // dtos
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -54,8 +54,11 @@ export class ServiceService {
     });
   }
 
-  async findOne(id: number) {
-    const service = await this.serviceRepository.findOne({ where: { id } });
+  async findOne(id: number, options?: FindOneOptions<Service>) {
+    const service = await this.serviceRepository.findOne({
+      where: { id },
+      ...options,
+    });
 
     if (!service) {
       throw new NotFoundException(`Service with id ${id} not found`);
@@ -86,6 +89,17 @@ export class ServiceService {
       services: [...servicesToAdd.map((item) => item.id)],
     });
   }
+
+  // async requestService(serviceId: number, userId: number) {
+  //   const service = await this.findOne(serviceId, {
+  //     relations: ['serviceParticipators'],
+  //   });
+  //   const profile = await this.profileService.findMe(userId);
+
+  //   service.serviceParticipators.push(profile);
+
+  //   return this.serviceRepository.save(service);
+  // }
 
   async remove(id: number) {
     const service = await this.serviceRepository.findOne({ where: { id } });

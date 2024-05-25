@@ -73,7 +73,7 @@ export class AuthService {
     };
   }
 
-  async create(data: RegisterAuthDto) {
+  async create(data: RegisterAuthDto, role?: USER_ROLES) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     const isUserExists = await queryRunner.manager.findOne(User, {
@@ -97,7 +97,7 @@ export class AuthService {
 
       const profile = queryRunner.manager.create(Profile, {
         ...data,
-        role: USER_ROLES.SERVICE_REQUESTER,
+        role: role || USER_ROLES.SERVICE_REQUESTER,
         user,
       } as unknown);
 

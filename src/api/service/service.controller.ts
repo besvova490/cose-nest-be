@@ -53,10 +53,17 @@ export class ServiceController {
     return this.serviceService.findOne(+id);
   }
 
-  @Post('/add-champion')
+  @Roles(USER_ROLES.SERVICE_CHAMPION)
+  @Post('/connect')
   addChampion(@Body() data: ServiceAddChampionDto, @CurrentUser() user) {
     return this.serviceService.addChampion(data.services, user.profile.id);
   }
+
+  // @Roles(USER_ROLES.SERVICE_REQUESTER)
+  // @Post(':id/request')
+  // requestService(@Param('id') id: string, @CurrentUser() user) {
+  //   return this.serviceService.requestService(+id, user.profile.id);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
